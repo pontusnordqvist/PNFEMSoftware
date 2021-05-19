@@ -1,0 +1,870 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>userInterface &mdash; PNFEMSoftware 1.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> PNFEMSoftware
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">FEMSoftware</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PNFEMSoftware</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="index.html">Module code</a> &raquo;</li>
+        
+      <li>userInterface</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for userInterface</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Created on Sat May  2 13:57:35 2020</span>
+
+<span class="sd">@author: Pontus Nordqvist</span>
+<span class="sd">@email: p.nordq@gmail.com</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">PyQt5.QtCore</span> <span class="kn">import</span> <span class="n">QThread</span>
+<span class="kn">from</span> <span class="nn">PyQt5.QtWidgets</span> <span class="kn">import</span> <span class="n">QMainWindow</span><span class="p">,</span> <span class="n">QFileDialog</span><span class="p">,</span> <span class="n">QMessageBox</span>
+<span class="kn">from</span> <span class="nn">PyQt5.uic</span> <span class="kn">import</span> <span class="n">loadUi</span>
+<span class="kn">from</span> <span class="nn">PyQt5.QtGui</span> <span class="kn">import</span> <span class="n">QFont</span><span class="p">,</span> <span class="n">QIcon</span>
+
+<span class="kn">from</span> <span class="nn">dataTypes</span> <span class="kn">import</span> <span class="n">InputData</span><span class="p">,</span> <span class="n">OutputData</span>
+<span class="kn">from</span> <span class="nn">solvers</span> <span class="kn">import</span> <span class="n">Solver</span>
+<span class="kn">from</span> <span class="nn">resultUtilities</span> <span class="kn">import</span> <span class="n">Report</span><span class="p">,</span> <span class="n">Visualization</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<div class="viewcode-block" id="MainWindow"><a class="viewcode-back" href="../userInterface.html#userInterface.MainWindow">[docs]</a><span class="k">class</span> <span class="nc">MainWindow</span><span class="p">(</span><span class="n">QMainWindow</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    MainWindow-class to hande GUI. It inherits from the QMainWindow class.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">app</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Constructor for the MainWindow GUI class. It initializes to deafualt</span>
+<span class="sd">        values. Additional, it fixes the window to 1000x500. It also load from</span>
+<span class="sd">        the &#39;mainwindow.ui&#39; file.</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">QMainWindow</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">app</span> <span class="o">=</span> <span class="n">app</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span> <span class="o">=</span> <span class="n">loadUi</span><span class="p">(</span><span class="s1">&#39;mainwindow.ui&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span> <span class="c1">#Loads the GUI files</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">setFixedSize</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
+
+        <span class="c1">#--Connection of GUI elements to internal methods.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">actionNew</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">onActionNew</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">actionOpen</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">onActionOpen</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">actionSave</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">onActionSave</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">actionSave_as</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">onActionSaveAs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">actionExit</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">onActionExit</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">actionExecute</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">onActionExecute</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">showGeometryButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">onShowGeometry</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">showMeshButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">onShowMesh</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">showDisplacementsButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">onShowDisplacement</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">showElementValuesButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">onShowElementValues</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">maxElSizeSlide</span><span class="o">.</span><span class="n">valueChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">onShowElsize</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">paramstudyButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">onExecuteParamStudy</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">executePushButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">onActionExecute</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">undisplacedBox</span><span class="o">.</span><span class="n">stateChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">onShowUndisplacedMesh</span><span class="p">)</span>
+
+        <span class="c1">#Sets set shortcuts commandos</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">actionExecute</span><span class="o">.</span><span class="n">setShortcut</span><span class="p">(</span><span class="s2">&quot;Ctrl+R&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">actionExit</span><span class="o">.</span><span class="n">setShortcut</span><span class="p">(</span><span class="s2">&quot;Alt+F4&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">actionOpen</span><span class="o">.</span><span class="n">setShortcut</span><span class="p">(</span><span class="s2">&quot;Ctrl+O&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">actionSave</span><span class="o">.</span><span class="n">setShortcut</span><span class="p">(</span><span class="s2">&quot;Ctrl+S&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">actionSave_as</span><span class="o">.</span><span class="n">setShortcut</span><span class="p">(</span><span class="s2">&quot;Ctrl+Shift+S&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">actionNew</span><span class="o">.</span><span class="n">setShortcut</span><span class="p">(</span><span class="s2">&quot;Ctrl+N&quot;</span><span class="p">)</span>
+
+        <span class="c1">#Sets icons for shortcuts commandos</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">actionExecute</span><span class="o">.</span><span class="n">setIcon</span><span class="p">(</span><span class="n">QIcon</span><span class="p">(</span><span class="s2">&quot;Icons/icons8-execute.png&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">actionExit</span><span class="o">.</span><span class="n">setIcon</span><span class="p">(</span><span class="n">QIcon</span><span class="p">(</span><span class="s2">&quot;Icons/icons8-exit.png&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">actionOpen</span><span class="o">.</span><span class="n">setIcon</span><span class="p">(</span><span class="n">QIcon</span><span class="p">(</span><span class="s2">&quot;Icons/icons8-open.png&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">actionSave</span><span class="o">.</span><span class="n">setIcon</span><span class="p">(</span><span class="n">QIcon</span><span class="p">(</span><span class="s2">&quot;Icons/icons8-save.png&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">actionSave_as</span><span class="o">.</span><span class="n">setIcon</span><span class="p">(</span><span class="n">QIcon</span><span class="p">(</span><span class="s2">&quot;Icons/icons8-save-as.png&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">actionNew</span><span class="o">.</span><span class="n">setIcon</span><span class="p">(</span><span class="n">QIcon</span><span class="p">(</span><span class="s2">&quot;Icons/icons8-new-document.png&quot;</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">triButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">onEltype2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">triButton</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span> <span class="c1">#Sets triangles as default in GUI.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">quadButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">onEltype3</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">bendButton</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span> <span class="c1">#Set parameterstudy of b as default.</span>
+
+        <span class="c1">#Sets font and size in the repport window.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">reportEdit</span><span class="o">.</span><span class="n">setFont</span><span class="p">(</span><span class="n">QFont</span><span class="p">(</span><span class="s1">&#39;Courier New&#39;</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+
+        <span class="c1">#--Sets the following windows to be read only.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">reportEdit</span><span class="o">.</span><span class="n">setReadOnly</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">maxElSizeEdit</span><span class="o">.</span><span class="n">setReadOnly</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1">#--Shows the GUI</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">raise_</span><span class="p">()</span>
+
+        <span class="c1">#--Initialize the defult values for the plantmodel.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initModel</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">updateControls</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="MainWindow.onActionExecute"><a class="viewcode-back" href="../userInterface.html#userInterface.MainWindow.onActionExecute">[docs]</a>    <span class="k">def</span> <span class="nf">onActionExecute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to start an execution thread to call an solver on the input.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">updateModel</span><span class="p">()</span> <span class="c1">#Updates the model with new input.</span>
+
+        <span class="c1">#Makes sure no fatal errors occurs in the input before execution.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="kc">True</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fatalErrors</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span> <span class="c1">#Disables GUI during execution.</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">solver</span> <span class="o">=</span> <span class="n">Solver</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">OutputData</span><span class="p">)</span>
+
+            <span class="c1">#Moves over computation to a thread so the GUI won&#39;t freeze.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">solverThread</span> <span class="o">=</span> <span class="n">SolverThread</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">solverThread</span><span class="o">.</span><span class="n">finished</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">onSolverFinished</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">solverThread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="MainWindow.onSolverFinished"><a class="viewcode-back" href="../userInterface.html#userInterface.MainWindow.onSolverFinished">[docs]</a>    <span class="k">def</span> <span class="nf">onSolverFinished</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to start when an execution thread has enden. Also print the</span>
+<span class="sd">        report.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">#Boolean to make plot buttons diasbled before execution.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calcDone</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">updateButtons</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Visual</span> <span class="o">=</span> <span class="n">Visualization</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">OutputData</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span> <span class="c1">#Makes GUI interactible.</span>
+
+        <span class="c1"># --- Generate the end repport.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">reportEdit</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span> <span class="c1">#Cleares previous text.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">report</span> <span class="o">=</span> <span class="n">Report</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">OutputData</span><span class="p">)</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">formatter</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;float&#39;</span><span class="p">:</span> <span class="s1">&#39;</span><span class="si">{: 0.3f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">reportEdit</span><span class="o">.</span><span class="n">setPlainText</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">report</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="MainWindow.initModel"><a class="viewcode-back" href="../userInterface.html#userInterface.MainWindow.initModel">[docs]</a>    <span class="k">def</span> <span class="nf">initModel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to initiate the model with default parameters given from the</span>
+<span class="sd">        plantmodel class. It also defaults visualisation, filename, buttons,</span>
+<span class="sd">        solver and booleans for the calculation done and fatal error found.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">InputData</span> <span class="o">=</span> <span class="n">InputData</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">OutputData</span> <span class="o">=</span> <span class="n">OutputData</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Visual</span> <span class="o">=</span> <span class="n">Visualization</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">OutputData</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calcDone</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="c1">#Dict to detect fatal error for the differen key cases.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fatalErrors</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;calc_inputs&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="s1">&#39;bend_input&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="s1">&#39;text_input&#39;</span><span class="p">:</span> <span class="kc">False</span>
+            <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">updateButtons</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">solver</span> <span class="o">=</span> <span class="n">Solver</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">OutputData</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Visual</span><span class="o">.</span><span class="n">drawUndisplaced</span> <span class="o">=</span> <span class="kc">False</span> <span class="c1">#Default to not show the org mesh.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">undisplacedBox</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span> <span class="c1">#Sets default to not checked.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">undisplacedBox</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MainWindow.updateControls"><a class="viewcode-back" href="../userInterface.html#userInterface.MainWindow.updateControls">[docs]</a>    <span class="k">def</span> <span class="nf">updateControls</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to update the GUI with the values from the plantmodel class.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">wEdit</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="o">.</span><span class="n">w</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">hEdit</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="o">.</span><span class="n">h</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">aEdit</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="o">.</span><span class="n">a</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">bEdit</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="o">.</span><span class="n">b</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">tEdit</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="o">.</span><span class="n">t</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">eEdit</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="o">.</span><span class="n">E</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">vEdit</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="o">.</span><span class="n">v</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">qEdit</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="o">.</span><span class="n">q</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">maxElSizeEdit</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="o">.</span><span class="n">el_size_factor</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">maxElSizeSlide</span><span class="o">.</span><span class="n">setValue</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="o">.</span><span class="n">el_size_factor</span><span class="o">-</span><span class="mf">0.99</span><span class="p">)</span><span class="o">/</span>
+                                        <span class="p">(</span><span class="o">-</span><span class="mf">9.8e-3</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">bendEdit</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="o">.</span><span class="n">bend</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">qendEdit</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="o">.</span><span class="n">qend</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">paramstudyBox</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="o">.</span><span class="n">paramSteps</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MainWindow.updateModel"><a class="viewcode-back" href="../userInterface.html#userInterface.MainWindow.updateModel">[docs]</a>    <span class="k">def</span> <span class="nf">updateModel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to update the model given and input in the GUI. If an invalid</span>
+<span class="sd">        input is given, an critical messagebox stating the error is triggered.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">wEdit</span><span class="o">.</span><span class="n">text</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="o">.</span><span class="n">h</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">hEdit</span><span class="o">.</span><span class="n">text</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="o">.</span><span class="n">a</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">aEdit</span><span class="o">.</span><span class="n">text</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">bEdit</span><span class="o">.</span><span class="n">text</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">tEdit</span><span class="o">.</span><span class="n">text</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="o">.</span><span class="n">E</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">eEdit</span><span class="o">.</span><span class="n">text</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">vEdit</span><span class="o">.</span><span class="n">text</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="o">.</span><span class="n">q</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">qEdit</span><span class="o">.</span><span class="n">text</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="o">.</span><span class="n">el_size</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">maxElSizeEdit</span><span class="o">.</span><span class="n">text</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="o">.</span><span class="n">bend</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">bendEdit</span><span class="o">.</span><span class="n">text</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="o">.</span><span class="n">qend</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">qendEdit</span><span class="o">.</span><span class="n">text</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="o">.</span><span class="n">paramSteps</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">paramstudyBox</span><span class="o">.</span><span class="n">text</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fatalErrors</span><span class="p">[</span><span class="s1">&#39;text_input&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span> <span class="c1">#Won&#39;t flip if above fails.</span>
+
+        <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span> <span class="c1">#Catches errors</span>
+            <span class="c1">#Catches if the input is a string/char. Note: is a fatal error</span>
+            <span class="k">if</span> <span class="s1">&#39;could not convert string to float&#39;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">err</span><span class="p">):</span>
+                <span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;The program can only handle numbers as input!&quot;</span>
+                <span class="n">QMessageBox</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Invalid input&quot;</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+                <span class="k">del</span> <span class="n">message</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">fatalErrors</span><span class="p">[</span><span class="s1">&#39;text_input&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">__checkValidInput</span><span class="p">()</span></div>
+
+
+    <span class="k">def</span> <span class="nf">__checkValidInput</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Helpmethod to see if an input is valid. It checks if the given lengths</span>
+<span class="sd">        are negative or zero. Also, it checks if the Poisson&#39;s ratio is in the</span>
+<span class="sd">        valid intervall -1&lt;v&lt;0.5 and if b or bend &gt;= h/2.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">#Dict with all input lengths, to ease iteration through them below.</span>
+        <span class="n">lengthDict</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;w&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="o">.</span><span class="n">w</span><span class="p">,</span>
+            <span class="s1">&#39;h&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="o">.</span><span class="n">h</span><span class="p">,</span>
+            <span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="o">.</span><span class="n">a</span><span class="p">,</span>
+            <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="o">.</span><span class="n">b</span><span class="p">,</span>
+            <span class="s1">&#39;t&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="o">.</span><span class="n">t</span><span class="p">,</span>
+            <span class="s1">&#39;b, end&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="o">.</span><span class="n">bend</span>
+            <span class="p">}</span>
+        <span class="n">bend_passed</span> <span class="o">=</span> <span class="kc">True</span> <span class="c1">#Boolean to see if new inputs of bend is valid.</span>
+        <span class="n">lengths_passed</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1">#Iterates through the lengths to detec errors.</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">lengthDict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="c1">#Checks if lengths are negative.</span>
+            <span class="k">if</span> <span class="n">lengthDict</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">message</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2"> is </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2"> m, which is negative and not possible&quot;</span>
+                          <span class="s2">&quot; for a length!&quot;</span><span class="p">)</span>
+                <span class="n">QMessageBox</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Invalid input&quot;</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+                <span class="k">del</span> <span class="n">message</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">fatalErrors</span><span class="p">[</span><span class="s1">&#39;calc_inputs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">lengths_passed</span> <span class="o">=</span> <span class="kc">False</span>
+
+                <span class="c1">#Special case for b, end to reset boolean.</span>
+                <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="s1">&#39;b, end&#39;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">fatalErrors</span><span class="p">[</span><span class="s1">&#39;bend_input&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="n">bend_passed</span> <span class="o">=</span> <span class="kc">False</span>
+
+            <span class="c1">#Checks if lengths are zeros.</span>
+            <span class="k">if</span> <span class="n">lengthDict</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2"> is </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2"> m, which is not a possible dimension!&quot;</span>
+                <span class="n">QMessageBox</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Invalid input&quot;</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+                <span class="k">del</span> <span class="n">message</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">fatalErrors</span><span class="p">[</span><span class="s1">&#39;calc_inputs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">lengths_passed</span> <span class="o">=</span> <span class="kc">False</span>
+
+                <span class="c1">#Special case for b, end to reset boolean.</span>
+                <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="s1">&#39;b, end&#39;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">fatalErrors</span><span class="p">[</span><span class="s1">&#39;bend_input&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="n">bend_passed</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1">#Checks valid range of v.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="o">.</span><span class="n">v</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="o">.</span><span class="n">v</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">:</span>
+            <span class="n">message</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The program works with isotropic, linearly elastic &quot;</span>
+                      <span class="s2">&quot;materials , so  v is in the range of -1  to 0.5, you &quot;</span>
+                      <span class="sa">f</span><span class="s2">&quot;inputed v = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="o">.</span><span class="n">v</span> <span class="si">}</span><span class="s2">!&quot;</span><span class="p">)</span>
+            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Invalid input&quot;</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+            <span class="k">del</span> <span class="n">message</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fatalErrors</span><span class="p">[</span><span class="s1">&#39;calc_inputs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">lengths_passed</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1">#Checks if b is greater than h.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="o">.</span><span class="n">b</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="o">.</span><span class="n">h</span><span class="o">/</span><span class="mi">2</span><span class="p">:</span>
+            <span class="n">message</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The inputed b is  </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="o">.</span><span class="n">b</span><span class="si">}</span><span class="s2"> m, which is &quot;</span>
+                      <span class="s2">&quot;greater or eqaul to half the height h that is&quot;</span>
+                      <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="o">.</span><span class="n">h</span><span class="o">/</span><span class="mi">2</span><span class="si">}</span><span class="s2"> m, this is an invalid geometry!&quot;</span> <span class="p">)</span>
+            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Invalid input&quot;</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+            <span class="k">del</span> <span class="n">message</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fatalErrors</span><span class="p">[</span><span class="s1">&#39;calc_inputs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">lengths_passed</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1">#Checks if bend is greater than h.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="o">.</span><span class="n">bend</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="o">.</span><span class="n">h</span><span class="o">/</span><span class="mi">2</span><span class="p">:</span>
+            <span class="n">message</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The inputed b, end is </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="o">.</span><span class="n">bend</span><span class="si">}</span><span class="s2"> m, which&quot;</span>
+                      <span class="sa">f</span><span class="s2">&quot;is greater or eqaul to half the height h that is &quot;</span>
+                      <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="o">.</span><span class="n">h</span><span class="o">/</span><span class="mi">2</span><span class="si">}</span><span class="s2"> m, this is an invalid geometry &quot;</span>
+                      <span class="s2">&quot;for the model!&quot;</span><span class="p">)</span>
+            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Invalid input&quot;</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+            <span class="k">del</span> <span class="n">message</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fatalErrors</span><span class="p">[</span><span class="s1">&#39;bend_input&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">bend_passed</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="n">bend_passed</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fatalErrors</span><span class="p">[</span><span class="s1">&#39;bend_input&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="n">lengths_passed</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fatalErrors</span><span class="p">[</span><span class="s1">&#39;calc_inputs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+
+
+<div class="viewcode-block" id="MainWindow.onShowElsize"><a class="viewcode-back" href="../userInterface.html#userInterface.MainWindow.onShowElsize">[docs]</a>    <span class="k">def</span> <span class="nf">onShowElsize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to get the given value from the element size slider to the</span>
+<span class="sd">        inputdata. Also, it updates the box showing the given value.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">#Empirically obtained conversion of slide input to CALFEM maxElSize.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="o">.</span><span class="n">el_size_factor</span> <span class="o">=</span> <span class="nb">round</span><span class="p">((</span><span class="o">-</span><span class="mf">9.8e-3</span><span class="p">)</span> <span class="o">*</span>
+                                        <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">maxElSizeSlide</span><span class="o">.</span><span class="n">value</span><span class="p">())</span> <span class="o">+</span> <span class="mf">0.99</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">maxElSizeEdit</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="o">.</span><span class="n">el_size_factor</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="MainWindow.onActionOpen"><a class="viewcode-back" href="../userInterface.html#userInterface.MainWindow.onActionOpen">[docs]</a>    <span class="k">def</span> <span class="nf">onActionOpen</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to opean an input JSON file.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">QFileDialog</span><span class="o">.</span><span class="n">getOpenFileName</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="p">,</span> <span class="s2">&quot;Open model&quot;</span><span class="p">,</span>
+                                        <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;Model files (*.json *.jpg *.bmp)&quot;</span><span class="p">)</span>
+
+        <span class="c1">#Catches if no filname has been given.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">!=</span><span class="s2">&quot;&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Visual</span><span class="o">.</span><span class="n">closeAll</span><span class="p">()</span> <span class="c1">#Closses all windows.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">updateControls</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">calcDone</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">updateButtons</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">reportEdit</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span> <span class="c1">#Cleares repport on new model.</span>
+            <span class="n">message</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The model was succesfully succesfully loaded from the&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot; file </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="si">}</span><span class="s2">!&quot;</span><span class="p">)</span>
+            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">information</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="s1">&#39;Message&#39;</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+            <span class="k">del</span> <span class="n">message</span></div>
+
+<div class="viewcode-block" id="MainWindow.onActionSave"><a class="viewcode-back" href="../userInterface.html#userInterface.MainWindow.onActionSave">[docs]</a>    <span class="k">def</span> <span class="nf">onActionSave</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to save the modell. Before it saves the model, it updates it with</span>
+<span class="sd">        the given inpute i.e no prior execution is needed. It also checks for</span>
+<span class="sd">        if there are any fatal errors and does not save if that is the case.</span>
+<span class="sd">        It uses popups to communicate with the user.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">updateModel</span><span class="p">()</span>
+        <span class="c1">#Outer shell to protect from fatal erros.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="kc">True</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fatalErrors</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">_</span>  <span class="o">=</span> <span class="n">QFileDialog</span><span class="o">.</span><span class="n">getSaveFileName</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="p">,</span>
+                <span class="s2">&quot;Save model&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;Model files (*.json)&quot;</span><span class="p">)</span>
+
+            <span class="c1">#Catches if no filname has been given.</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">!=</span><span class="s2">&quot;&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">updateModel</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+                <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;The model was  saved in the file </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="si">}</span><span class="s2">!&quot;</span>
+                <span class="n">QMessageBox</span><span class="o">.</span><span class="n">information</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="s1">&#39;Message&#39;</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+                <span class="k">del</span> <span class="n">message</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">message</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;You still have an invalid input, and therefore can&#39;t &quot;</span>
+                      <span class="sa">f</span><span class="s2">&quot;save! </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Invalid input&quot;</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+            <span class="k">del</span> <span class="n">message</span></div>
+
+<div class="viewcode-block" id="MainWindow.onActionSaveAs"><a class="viewcode-back" href="../userInterface.html#userInterface.MainWindow.onActionSaveAs">[docs]</a>    <span class="k">def</span> <span class="nf">onActionSaveAs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to save the model as an new file. Before it saves the model,</span>
+<span class="sd">        it updates it with the given input i.e no prior execution is needed.</span>
+<span class="sd">        It also checks for if there are any fatal errors and does not save if</span>
+<span class="sd">        that is the case. It uses popups to communicate with the user.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">updateModel</span><span class="p">()</span>
+
+        <span class="c1">#Outer shell to protect from fatal erros.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="kc">True</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fatalErrors</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="n">newFilename</span><span class="p">,</span> <span class="n">_</span>  <span class="o">=</span> <span class="n">QFileDialog</span><span class="o">.</span><span class="n">getSaveFileName</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="p">,</span>
+                <span class="s2">&quot;Save model&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;Model files (*.json)&quot;</span><span class="p">)</span>
+
+            <span class="c1">#Catches if no filname has been given.</span>
+            <span class="k">if</span> <span class="n">newFilename</span> <span class="o">!=</span><span class="s2">&quot;&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">newFilename</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">updateModel</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+
+                <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;The model was saved in the file </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="si">}</span><span class="s2">!&quot;</span>
+                <span class="n">QMessageBox</span><span class="o">.</span><span class="n">information</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="s2">&quot;Message&quot;</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+                <span class="k">del</span> <span class="n">message</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">message</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;You still have an invalid input, and therefore can&#39;t&quot;</span>
+                      <span class="s2">&quot; save! </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Invalid input&quot;</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+            <span class="k">del</span> <span class="n">message</span></div>
+
+<div class="viewcode-block" id="MainWindow.onActionNew"><a class="viewcode-back" href="../userInterface.html#userInterface.MainWindow.onActionNew">[docs]</a>    <span class="k">def</span> <span class="nf">onActionNew</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to initiate a new model. The new model will have the default</span>
+<span class="sd">        values.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Visual</span><span class="o">.</span><span class="n">closeAll</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initModel</span><span class="p">()</span> <span class="c1">#Load defaults.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">updateControls</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">reportEdit</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span> <span class="c1">#Cleares repport on new model.</span></div>
+
+<div class="viewcode-block" id="MainWindow.onActionExit"><a class="viewcode-back" href="../userInterface.html#userInterface.MainWindow.onActionExit">[docs]</a>    <span class="k">def</span> <span class="nf">onActionExit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method that is triggered when the user clicks on the exit button in the</span>
+<span class="sd">        program (not the x in the window). Also, it closes all figure windows.</span>
+<span class="sd">        Note: It might not terminate the kernel.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Visual</span><span class="o">.</span><span class="n">closeAll</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="MainWindow.updateButtons"><a class="viewcode-back" href="../userInterface.html#userInterface.MainWindow.updateButtons">[docs]</a>    <span class="k">def</span> <span class="nf">updateButtons</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to update the button and the ticbox to be visable after an</span>
+<span class="sd">        calulation is done.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">showGeometryButton</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">calcDone</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">showMeshButton</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">calcDone</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">showDisplacementsButton</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">calcDone</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">showElementValuesButton</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">calcDone</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">undisplacedBox</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MainWindow.onShowGeometry"><a class="viewcode-back" href="../userInterface.html#userInterface.MainWindow.onShowGeometry">[docs]</a>    <span class="k">def</span> <span class="nf">onShowGeometry</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method that shows the geometry in the plantmodel class. It is triggered</span>
+<span class="sd">        when the geomtery button in the GUI is pressed.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Visual</span><span class="o">.</span><span class="n">showGeometry</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Visual</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span> <span class="c1">#Enables no further windows being triggered.</span></div>
+
+<div class="viewcode-block" id="MainWindow.onShowMesh"><a class="viewcode-back" href="../userInterface.html#userInterface.MainWindow.onShowMesh">[docs]</a>    <span class="k">def</span> <span class="nf">onShowMesh</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method that shows the mesh in the plantmodel class. It is triggered</span>
+<span class="sd">        when the mesh button in the GUI is pressed.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Visual</span><span class="o">.</span><span class="n">showMesh</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Visual</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span> <span class="c1">#Enables no further windows being triggered.</span></div>
+
+<div class="viewcode-block" id="MainWindow.onShowDisplacement"><a class="viewcode-back" href="../userInterface.html#userInterface.MainWindow.onShowDisplacement">[docs]</a>    <span class="k">def</span> <span class="nf">onShowDisplacement</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method that shows the calculated displacment in the plantmodel class.</span>
+<span class="sd">        It is triggered when the displacement button in the GUI is pressed.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Visual</span><span class="o">.</span><span class="n">showDisplacement</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Visual</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span> <span class="c1">#Enables no further windows being triggered.</span></div>
+
+<div class="viewcode-block" id="MainWindow.onShowElementValues"><a class="viewcode-back" href="../userInterface.html#userInterface.MainWindow.onShowElementValues">[docs]</a>    <span class="k">def</span> <span class="nf">onShowElementValues</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method that shows the calculated effective stress for the elements</span>
+<span class="sd">        in the plantmodel class. It is triggered when the displacement button</span>
+<span class="sd">        in the GUI is pressed.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Visual</span><span class="o">.</span><span class="n">showElementValues</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Visual</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span> <span class="c1">#Enables no further windows being triggered.</span></div>
+
+
+<div class="viewcode-block" id="MainWindow.onShowUndisplacedMesh"><a class="viewcode-back" href="../userInterface.html#userInterface.MainWindow.onShowUndisplacedMesh">[docs]</a>    <span class="k">def</span> <span class="nf">onShowUndisplacedMesh</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to show/unshow the undisplaced mesh in the displacement figure.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Visual</span><span class="o">.</span><span class="n">drawUndisplaced</span> <span class="o">=</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">Visual</span><span class="o">.</span><span class="n">drawUndisplaced</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Visual</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span> <span class="c1">#Enables no further windows being triggered.</span></div>
+
+<div class="viewcode-block" id="MainWindow.onExecuteParamStudy"><a class="viewcode-back" href="../userInterface.html#userInterface.MainWindow.onExecuteParamStudy">[docs]</a>    <span class="k">def</span> <span class="nf">onExecuteParamStudy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to that runs a paramter study using a solver thread. The input</span>
+<span class="sd">        is taken from the GUI. Further, it also handles some invalid inputs.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">#--Booleans on what parameter study to preform.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="o">.</span><span class="n">paramb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">bendButton</span><span class="o">.</span><span class="n">isChecked</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="o">.</span><span class="n">paramq</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">qendButton</span><span class="o">.</span><span class="n">isChecked</span><span class="p">()</span>
+
+        <span class="n">qend_typerror</span> <span class="o">=</span> <span class="kc">False</span> <span class="c1">#Boolean to check if a qend typerror has occured.</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="o">.</span><span class="n">paramb</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="o">.</span><span class="n">bstart</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">bEdit</span><span class="o">.</span><span class="n">text</span><span class="p">())</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="o">.</span><span class="n">bend</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">bendEdit</span><span class="o">.</span><span class="n">text</span><span class="p">())</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__checkValidInput</span><span class="p">()</span>
+                <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;paramStudy_01&quot;</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="o">.</span><span class="n">paramq</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="o">.</span><span class="n">qstart</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">qEdit</span><span class="o">.</span><span class="n">text</span><span class="p">())</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="o">.</span><span class="n">qend</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">qendEdit</span><span class="o">.</span><span class="n">text</span><span class="p">())</span>
+                <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;paramStudy_02&quot;</span>
+
+        <span class="c1">#Catches invalid inputs.</span>
+        <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+             <span class="c1">#Catches if input is string.</span>
+            <span class="k">if</span> <span class="s1">&#39;could not convert string to float&#39;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">err</span><span class="p">):</span>
+                <span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;The program can only handle numbers as input!&quot;</span>
+                <span class="n">QMessageBox</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Invalid input&quot;</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+                <span class="k">del</span> <span class="n">message</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">fatalErrors</span><span class="p">[</span><span class="s1">&#39;bend_input&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">qend_typerror</span> <span class="o">=</span> <span class="kc">True</span>                  <span class="c1">#A qend typerror is found!</span>
+
+        <span class="c1">#Flip backs the q_end typerror if it&#39;s corrected.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="o">.</span><span class="n">paramq</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">qend_typerror</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fatalErrors</span><span class="p">[</span><span class="s1">&#39;bend_input&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">qend_typerror</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1">#Outer shell to stop execution if there is an fatal error.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">fatalErrors</span><span class="p">[</span><span class="s1">&#39;bend_input&#39;</span><span class="p">]:</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="o">.</span><span class="n">paramFilename</span> <span class="o">=</span> <span class="s2">&quot;paramStudy&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="o">.</span><span class="n">paramSteps</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">paramstudyBox</span><span class="o">.</span><span class="n">value</span><span class="p">())</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">solverThread</span> <span class="o">=</span> <span class="n">SolverThread</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="p">,</span> <span class="n">paramStudy</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">solverThread</span><span class="o">.</span><span class="n">finished</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">onSolverFinished</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">solverThread</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+
+            <span class="n">message</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The paramater study was succesfull!</span><span class="se">\n</span><span class="s2"> It is saved in&quot;</span>
+                      <span class="sa">f</span><span class="s2">&quot;the .vtk which starts with </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2"> !&quot;</span><span class="p">)</span>
+            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">information</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="s1">&#39;Message&#39;</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+            <span class="k">del</span> <span class="n">message</span></div>
+
+<div class="viewcode-block" id="MainWindow.onEltype2"><a class="viewcode-back" href="../userInterface.html#userInterface.MainWindow.onEltype2">[docs]</a>    <span class="k">def</span> <span class="nf">onEltype2</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to change the element type to 2 (triangles). It is triggered</span>
+<span class="sd">        by the corresponding radio button.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="o">.</span><span class="n">el_type</span> <span class="o">=</span> <span class="mi">2</span></div>
+
+<div class="viewcode-block" id="MainWindow.onEltype3"><a class="viewcode-back" href="../userInterface.html#userInterface.MainWindow.onEltype3">[docs]</a>    <span class="k">def</span> <span class="nf">onEltype3</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to change the element type to 3 (quads). It is triggered</span>
+<span class="sd">        by the corresponding radio button.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">InputData</span><span class="o">.</span><span class="n">el_type</span> <span class="o">=</span> <span class="mi">3</span></div></div>
+
+<div class="viewcode-block" id="SolverThread"><a class="viewcode-back" href="../userInterface.html#userInterface.SolverThread">[docs]</a><span class="k">class</span> <span class="nc">SolverThread</span><span class="p">(</span><span class="n">QThread</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class to handle execution threads i.e solverthreads.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">solver</span><span class="p">,</span> <span class="n">paramStudy</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Constructor for the solver thread.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        TYPE(solver): : plantmodel.Solver</span>
+<span class="sd">            DESCRIPTION. An plantmodel solver object.</span>
+<span class="sd">        TYPE(paramStudy): : bool, optional</span>
+<span class="sd">            DESCRIPTION. Boolean to indicate if a parameter study should be</span>
+<span class="sd">            performed. The default is False.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">QThread</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">solver</span> <span class="o">=</span> <span class="n">solver</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">paramStudy</span> <span class="o">=</span> <span class="n">paramStudy</span>
+
+    <span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to delete the thread.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+
+<div class="viewcode-block" id="SolverThread.run"><a class="viewcode-back" href="../userInterface.html#userInterface.SolverThread.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to start the thread. The thread does an solver.execute()</span>
+<span class="sd">        and a solver.executeParamStudy() if told to in the constructor.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">paramStudy</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">executeParamStudy</span><span class="p">()</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2020, Pontus Nordqvist.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

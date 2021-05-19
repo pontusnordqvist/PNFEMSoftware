@@ -1,0 +1,404 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>userInterface module &mdash; PNFEMSoftware 1.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="solvers module" href="solvers.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> PNFEMSoftware
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">FEMSoftware</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="dataTypes.html">dataTypes module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="main.html">main module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resultUtilities.html">resultUtilities module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="solvers.html">solvers module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">userInterface module</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">PNFEMSoftware</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="modules.html">FEMSoftware</a> &raquo;</li>
+        
+      <li>userInterface module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/userInterface.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-userInterface">
+<span id="userinterface-module"></span><h1>userInterface module<a class="headerlink" href="#module-userInterface" title="Permalink to this headline">¶</a></h1>
+<p>Created on Sat May  2 13:57:35 2020</p>
+<p>&#64;author: Pontus Nordqvist
+&#64;email: <a class="reference external" href="mailto:p&#46;nordq&#37;&#52;&#48;gmail&#46;com">p<span>&#46;</span>nordq<span>&#64;</span>gmail<span>&#46;</span>com</a></p>
+<dl class="py class">
+<dt id="userInterface.MainWindow">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">userInterface.</span></code><code class="sig-name descname"><span class="pre">MainWindow</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/userInterface.html#MainWindow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#userInterface.MainWindow" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QMainWindow</span></code></p>
+<p>MainWindow-class to hande GUI. It inherits from the QMainWindow class.</p>
+<dl class="py method">
+<dt id="userInterface.MainWindow.initModel">
+<code class="sig-name descname"><span class="pre">initModel</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/userInterface.html#MainWindow.initModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#userInterface.MainWindow.initModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to initiate the model with default parameters given from the
+plantmodel class. It also defaults visualisation, filename, buttons,
+solver and booleans for the calculation done and fatal error found.</p>
+<p>None.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="userInterface.MainWindow.onActionExecute">
+<code class="sig-name descname"><span class="pre">onActionExecute</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/userInterface.html#MainWindow.onActionExecute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#userInterface.MainWindow.onActionExecute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to start an execution thread to call an solver on the input.</p>
+<p>None.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="userInterface.MainWindow.onActionExit">
+<code class="sig-name descname"><span class="pre">onActionExit</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/userInterface.html#MainWindow.onActionExit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#userInterface.MainWindow.onActionExit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method that is triggered when the user clicks on the exit button in the
+program (not the x in the window). Also, it closes all figure windows.
+Note: It might not terminate the kernel.</p>
+<p>None.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="userInterface.MainWindow.onActionNew">
+<code class="sig-name descname"><span class="pre">onActionNew</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/userInterface.html#MainWindow.onActionNew"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#userInterface.MainWindow.onActionNew" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to initiate a new model. The new model will have the default
+values.</p>
+<p>None.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="userInterface.MainWindow.onActionOpen">
+<code class="sig-name descname"><span class="pre">onActionOpen</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/userInterface.html#MainWindow.onActionOpen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#userInterface.MainWindow.onActionOpen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to opean an input JSON file.</p>
+<p>None.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="userInterface.MainWindow.onActionSave">
+<code class="sig-name descname"><span class="pre">onActionSave</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/userInterface.html#MainWindow.onActionSave"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#userInterface.MainWindow.onActionSave" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to save the modell. Before it saves the model, it updates it with
+the given inpute i.e no prior execution is needed. It also checks for
+if there are any fatal errors and does not save if that is the case.
+It uses popups to communicate with the user.</p>
+<p>None.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="userInterface.MainWindow.onActionSaveAs">
+<code class="sig-name descname"><span class="pre">onActionSaveAs</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/userInterface.html#MainWindow.onActionSaveAs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#userInterface.MainWindow.onActionSaveAs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to save the model as an new file. Before it saves the model,
+it updates it with the given input i.e no prior execution is needed.
+It also checks for if there are any fatal errors and does not save if
+that is the case. It uses popups to communicate with the user.</p>
+<p>None.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="userInterface.MainWindow.onEltype2">
+<code class="sig-name descname"><span class="pre">onEltype2</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/userInterface.html#MainWindow.onEltype2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#userInterface.MainWindow.onEltype2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to change the element type to 2 (triangles). It is triggered
+by the corresponding radio button.</p>
+<p>None.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="userInterface.MainWindow.onEltype3">
+<code class="sig-name descname"><span class="pre">onEltype3</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/userInterface.html#MainWindow.onEltype3"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#userInterface.MainWindow.onEltype3" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to change the element type to 3 (quads). It is triggered
+by the corresponding radio button.</p>
+<p>None.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="userInterface.MainWindow.onExecuteParamStudy">
+<code class="sig-name descname"><span class="pre">onExecuteParamStudy</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/userInterface.html#MainWindow.onExecuteParamStudy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#userInterface.MainWindow.onExecuteParamStudy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to that runs a paramter study using a solver thread. The input
+is taken from the GUI. Further, it also handles some invalid inputs.</p>
+<p>None.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="userInterface.MainWindow.onShowDisplacement">
+<code class="sig-name descname"><span class="pre">onShowDisplacement</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/userInterface.html#MainWindow.onShowDisplacement"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#userInterface.MainWindow.onShowDisplacement" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method that shows the calculated displacment in the plantmodel class.
+It is triggered when the displacement button in the GUI is pressed.</p>
+<p>None.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="userInterface.MainWindow.onShowElementValues">
+<code class="sig-name descname"><span class="pre">onShowElementValues</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/userInterface.html#MainWindow.onShowElementValues"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#userInterface.MainWindow.onShowElementValues" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method that shows the calculated effective stress for the elements
+in the plantmodel class. It is triggered when the displacement button
+in the GUI is pressed.</p>
+<p>None.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="userInterface.MainWindow.onShowElsize">
+<code class="sig-name descname"><span class="pre">onShowElsize</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/userInterface.html#MainWindow.onShowElsize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#userInterface.MainWindow.onShowElsize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to get the given value from the element size slider to the
+inputdata. Also, it updates the box showing the given value.</p>
+<p>None.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="userInterface.MainWindow.onShowGeometry">
+<code class="sig-name descname"><span class="pre">onShowGeometry</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/userInterface.html#MainWindow.onShowGeometry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#userInterface.MainWindow.onShowGeometry" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method that shows the geometry in the plantmodel class. It is triggered
+when the geomtery button in the GUI is pressed.</p>
+<p>None.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="userInterface.MainWindow.onShowMesh">
+<code class="sig-name descname"><span class="pre">onShowMesh</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/userInterface.html#MainWindow.onShowMesh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#userInterface.MainWindow.onShowMesh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method that shows the mesh in the plantmodel class. It is triggered
+when the mesh button in the GUI is pressed.</p>
+<p>None.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="userInterface.MainWindow.onShowUndisplacedMesh">
+<code class="sig-name descname"><span class="pre">onShowUndisplacedMesh</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/userInterface.html#MainWindow.onShowUndisplacedMesh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#userInterface.MainWindow.onShowUndisplacedMesh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to show/unshow the undisplaced mesh in the displacement figure.</p>
+<p>None.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="userInterface.MainWindow.onSolverFinished">
+<code class="sig-name descname"><span class="pre">onSolverFinished</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/userInterface.html#MainWindow.onSolverFinished"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#userInterface.MainWindow.onSolverFinished" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to start when an execution thread has enden. Also print the
+report.</p>
+<p>None.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="userInterface.MainWindow.updateButtons">
+<code class="sig-name descname"><span class="pre">updateButtons</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/userInterface.html#MainWindow.updateButtons"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#userInterface.MainWindow.updateButtons" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to update the button and the ticbox to be visable after an
+calulation is done.</p>
+<p>None.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="userInterface.MainWindow.updateControls">
+<code class="sig-name descname"><span class="pre">updateControls</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/userInterface.html#MainWindow.updateControls"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#userInterface.MainWindow.updateControls" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to update the GUI with the values from the plantmodel class.</p>
+<p>None.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="userInterface.MainWindow.updateModel">
+<code class="sig-name descname"><span class="pre">updateModel</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/userInterface.html#MainWindow.updateModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#userInterface.MainWindow.updateModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to update the model given and input in the GUI. If an invalid
+input is given, an critical messagebox stating the error is triggered.</p>
+<p>None.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="userInterface.SolverThread">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">userInterface.</span></code><code class="sig-name descname"><span class="pre">SolverThread</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">solver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">paramStudy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/userInterface.html#SolverThread"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#userInterface.SolverThread" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtCore.QThread</span></code></p>
+<p>Class to handle execution threads i.e solverthreads.</p>
+<dl class="py method">
+<dt id="userInterface.SolverThread.run">
+<code class="sig-name descname"><span class="pre">run</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/userInterface.html#SolverThread.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#userInterface.SolverThread.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to start the thread. The thread does an solver.execute()
+and a solver.executeParamStudy() if told to in the constructor.</p>
+<p>None.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="solvers.html" class="btn btn-neutral float-left" title="solvers module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2020, Pontus Nordqvist.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
